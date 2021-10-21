@@ -2,9 +2,11 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
-#include "header/primitive.h"
-#include "header/mesh.h"
-#include "header/animation.h"
+#include <stdlib.h>
+
+#include "primitive.h"
+#include "mesh.h"
+#include "animation.h"
 
 #define LARGEUR_ECRAN   800
 #define HAUTEUR_ECRAN   600
