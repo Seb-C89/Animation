@@ -1,3 +1,6 @@
+#if (_MSC_VER) // If compiled with Microsoft Visual Studio
+	#include <Windows.h> // Needed for OpenGL
+#endif
 #include <GL/gl.h>
 
 void Draw_axes(float x, float y, float z)

@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "../header/animation.h"
+
+#include "animation.h"
 
 /*
 q = Quaternion((0.921,0.390,0.0,0.0))

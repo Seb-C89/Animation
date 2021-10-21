@@ -1,9 +1,14 @@
-#include <stdlib.h>
-#include <stdio.h>
+#if (_MSC_VER) // If compiled with Microsoft Visual Studio
+	#include <Windows.h> // Needed for OpenGL
+#endif
+
 #include <GL/gl.h>
 
-#include "../header/mesh.h"
-#include "../header/quaternion.h"
+#include <stdlib.h>
+#include <stdio.h>
+
+#include "mesh.h"
+#include "quaternion.h"
 
 Mesh* Load_Mesh(const char* path)
 {

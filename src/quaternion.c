@@ -1,7 +1,8 @@
-#include "../header/quaternion.h"
 #include <stdio.h>
-#include <math.h>
 #include <string.h>
+#include <math.h>
+
+#include "quaternion.h"
 
 void Quat_to_identity(Quat *q)
 {

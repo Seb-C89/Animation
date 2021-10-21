@@ -1,3 +1,7 @@
+#if (_MSC_VER) // If compiled with Microsoft Visual Studio
+	#include <Windows.h> // Needed for OpenGL
+#endif
+
 #include <SDL/sdl.h>
 #include <GL/gl.h>
 #include <GL/glu.h>

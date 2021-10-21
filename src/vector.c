@@ -1,4 +1,4 @@
-#include "../header/vector.h"
+#include "vector.h"
 
 void Vec3f_to_identity(Vec3f *v)
 {
