@@ -2,7 +2,7 @@
 	#include <Windows.h> // Needed for OpenGL
 #endif
 
-#include <SDL/sdl.h>
+#include <SDL2/sdl.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
 
@@ -18,15 +18,19 @@
 #define FRAME_RATE      1000/FPS
 
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
+	int continuer = 1;
+	//unsigned int i, j;
+	int current_time = SDL_GetTicks(), elapsed_time = 0, last_time = 0;
+	SDL_Event event;
+
 	/* SDL Initialization */
 	SDL_Init(SDL_INIT_VIDEO);
-		SDL_SetVideoMode(640, 480, 32, SDL_OPENGL);
-		int continuer =1;
-		unsigned int i, j;
-		int current_time=SDL_GetTicks(), elapsed_time=0, last_time=0;
-		SDL_Event event;
+	SDL_Window* sdlWindow;
+	SDL_Renderer* sdlRenderer;
+	SDL_CreateWindowAndRenderer(640, 480, SDL_WINDOW_OPENGL, &sdlWindow, &sdlRenderer);
+	SDL_GLContext glcontext = SDL_GL_CreateContext(sdlWindow);
 
 	/* OpenGL Initialization */
 	glEnable(GL_DEPTH_TEST);
@@ -35,15 +39,15 @@ int main(int argc, char *argv[])
 
 	/* OpenGL Initialization (bis) */
 	glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		gluPerspective(70,(double)LARGEUR_ECRAN/HAUTEUR_ECRAN, 1, 100);
+	glLoadIdentity();
+	gluPerspective(70, (double)LARGEUR_ECRAN / HAUTEUR_ECRAN, 1, 100);
 
 	/* Load files */
-	Mesh *mymesh = Load_Mesh("mesh\\mesh");
-	Skeleton *myskeleton = Load_Skeleton("mesh\\skeleton");
-		mymesh->skeleton = myskeleton;
-	Animation_set *myanimation_set = Load_Animation_set("mesh\\anim");
-		mymesh->skeleton->animation_set = myanimation_set;
+	Mesh* mymesh = Load_Mesh("mesh\\mesh");
+	Skeleton* myskeleton = Load_Skeleton("mesh\\skeleton");
+	mymesh->skeleton = myskeleton;
+	Animation_set* myanimation_set = Load_Animation_set("mesh\\anim");
+	mymesh->skeleton->animation_set = myanimation_set;
 	Make_unique_index(mymesh);
 	/*for(i=0; i < mymesh->skeleton->animation_set->animations[0].count; i++)
 	{
@@ -53,55 +57,55 @@ int main(int argc, char *argv[])
 		}
 	}*/
 
-	while(continuer)
+	while (continuer)
 	{
 		current_time = SDL_GetTicks();
 		elapsed_time = current_time - last_time;
 
 		if (elapsed_time > FRAME_RATE)
 		{
-            SDL_PollEvent(&event);
-            switch(event.type)
-            {
-                case SDL_QUIT:
-                    continuer = 0;
-                    break;
-                case SDLK_k:
-                    break;
-                default:
-                    break;
-            }
+			SDL_PollEvent(&event);
+			switch (event.type)
+			{
+			case SDL_QUIT:
+				continuer = 0;
+				break;
+			case SDLK_k:
+				break;
+			default:
+				break;
+			}
 
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            glMatrixMode(GL_MODELVIEW);
-                glLoadIdentity();
-                gluLookAt(20,0,0,0,0,0,0,0,1);
-                /*glRotated(angleX,1,0,0);*/
-                /*glRotated(angleZ,0,0,1);*/
+			glMatrixMode(GL_MODELVIEW);
+			glLoadIdentity();
+			gluLookAt(20, 0, 0, 0, 0, 0, 0, 0, 1);
+			/*glRotated(angleX,1,0,0);*/
+			/*glRotated(angleZ,0,0,1);*/
 
-            /* Draw */
+		/* Draw */
 
-            glDisable(GL_LIGHTING);
-            Draw_axes(100,100,100);
-            glEnable(GL_LIGHTING);
-            /*printf("current_time: %i", current_time);*/
-            Play_Animation(mymesh, 0, SDL_GetTicks());
-        	/*for(i=0; i < myskeleton->bones_size; i++)
-        	{
-        		printf("B %u\n", i);
-        		printf("t %f %f %f\n", myskeleton->bones[i].translation.x, myskeleton->bones[i].translation.y, myskeleton->bones[i].translation.z);
-        		printf("q %f %f %f %f\n", myskeleton->bones[i].quaternion.w, myskeleton->bones[i].quaternion.x, myskeleton->bones[i].quaternion.y, myskeleton->bones[i].quaternion.z);
-        		printf("s %f %f %f\n", myskeleton->bones[i].scale.x, myskeleton->bones[i].scale.y, myskeleton->bones[i].scale.z);
-        	}
-        	printf("----------\n");*/
-            Draw_Skeleton(myskeleton);
+			glDisable(GL_LIGHTING);
+			Draw_axes(100, 100, 100);
+			glEnable(GL_LIGHTING);
+			/*printf("current_time: %i", current_time);*/
+			Play_Animation(mymesh, 0, SDL_GetTicks());
+			/*for(i=0; i < myskeleton->bones_size; i++)
+			{
+				printf("B %u\n", i);
+				printf("t %f %f %f\n", myskeleton->bones[i].translation.x, myskeleton->bones[i].translation.y, myskeleton->bones[i].translation.z);
+				printf("q %f %f %f %f\n", myskeleton->bones[i].quaternion.w, myskeleton->bones[i].quaternion.x, myskeleton->bones[i].quaternion.y, myskeleton->bones[i].quaternion.z);
+				printf("s %f %f %f\n", myskeleton->bones[i].scale.x, myskeleton->bones[i].scale.y, myskeleton->bones[i].scale.z);
+			}
+			printf("----------\n");*/
+			Draw_Skeleton(myskeleton);
 
-            Draw_Mesh_buffer(mymesh);
+			Draw_Mesh_buffer(mymesh);
 
-            glFlush();
-            SDL_GL_SwapBuffers();
-            last_time = current_time;
+			glFlush();
+			SDL_GL_SwapWindow(sdlWindow);
+			last_time = current_time;
 		}
 		else
 			SDL_Delay(FRAME_RATE - (current_time - last_time));
@@ -111,7 +115,7 @@ int main(int argc, char *argv[])
 	Delete_Skeleton(myskeleton);
 	Delete_Animation_set(myanimation_set);
 
+	SDL_GL_DeleteContext(glcontext);
 	SDL_Quit();
 	return EXIT_SUCCESS;
 }
-
