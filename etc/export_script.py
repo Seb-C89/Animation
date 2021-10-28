@@ -1,6 +1,4 @@
 import bpy
-import mathutils
-import math
 from mathutils import *
 from math import *
 
@@ -12,7 +10,7 @@ mesh = bpy.context.active_object
 armature = mesh.parent #Best way ?
 scene = bpy.context.scene #Current Scenes
 scene.frame_set(0)
-path = 'C:\\Users\\FAMILLE\\Desktop\\cdt_work_space\\Animation\\mesh\\';
+path = 'D:\\Users\\Seb\\Desktop\\mesh\\';
 
 #### Prepare
 #Triangulate
@@ -60,7 +58,7 @@ def veckey2d(v):
 
 out.write('t')
 for f in mesh.data.polygons:
-    for t in f.loop_indices:
+    for t in f.loop_indices: #Mesh.loops and Mesh.uv_layers are aligned so the same polygon loop indices can be used to find the UV’s
         if veckey2d(mesh.data.uv_layers.active.data[t].uv) not in uvco:
             uvco[veckey2d(mesh.data.uv_layers.active.data[t].uv)] = totco
             totco += 1
@@ -105,7 +103,6 @@ out.close()
 
 ### Anim
 out = open(path+'anim', 'w')
-
 out.write('a 0\n')
 for b in armature.pose.bones:
     bone_index = get_bone_index(b.bone.name)
@@ -117,10 +114,10 @@ for b in armature.pose.bones:
     for k in armature.animation_data.action.groups[bone_index].channels[0].keyframe_points:
         scene.frame_set(k.co.x)
         convert_m = Matrix.Rotation(pi * -90 / 180, 4, 'X')
-        m = armature.pose.bones[bone_index].matrix * armature.pose.bones[bone_index].bone.matrix_local.inverted()
+        m = armature.pose.bones[bone_index].matrix @ armature.pose.bones[bone_index].bone.matrix_local.inverted()
         q = armature.pose.bones[bone_index].rotation_quaternion
-        t = armature.pose.bones[bone_index].location * convert_m
-        s = armature.pose.bones[bone_index].scale * convert_m
+        t = armature.pose.bones[bone_index].location @ convert_m
+        s = armature.pose.bones[bone_index].scale @ convert_m
 
         #out.write('m %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f\n' % (m[0][0], m[1][0], m[2][0], m[3][0], m[0][1], m[1][1], m[2][1], m[3][1], m[0][2], m[1][2], m[2][2], m[3][2], m[0][3], m[1][3], m[2][3], m[3][3]))
         out.write('q %f %f %f %f\n' % (q.w, q.x, q.y, q.z))
