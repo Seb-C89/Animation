@@ -2,9 +2,6 @@ import bpy
 from mathutils import *
 from math import *
 
-def get_bone_index(bone_name):
-    return mesh.vertex_groups[bone_name].index
-
 ### Script
 mesh = bpy.context.active_object
 armature = mesh.parent #Best way ?
@@ -79,18 +76,23 @@ out.write('\n')
 
 out.close()
 
+### Generate bones's ID
+bones_id = {}
+for index, b in enumerate(armature.pose.bones):
+    bones_id[b.bone.name] = index
+
 ### Export skeleton
 out = open(path+'skeleton', 'w')
 
 for b in armature.pose.bones:
-    out.write('b %i %f %f %f\n' % (get_bone_index(b.bone.name), b.head.x, b.head.y, b.head.z))
+    out.write('b %i %f %f %f\n' % (bones_id[b.bone.name], b.head.x, b.head.y, b.head.z))
     out.write('c')
     for c in b.children:
-        out.write(' %i' % (get_bone_index(c.name)))
+        out.write(' %i' % (bones_id[c.name]))
     out.write('\n')
     out.write('p')
     if b.parent: # != None
-        out.write(' %i' % (get_bone_index(b.parent.name)))
+        out.write(' %i' % (bones_id[b.parent.name]))
     out.write('\n')
 
 for v in mesh.data.vertices:
@@ -105,19 +107,19 @@ out.close()
 out = open(path+'anim', 'w')
 out.write('a 0\n')
 for b in armature.pose.bones:
-    bone_index = get_bone_index(b.bone.name)
+    bone_index = bones_id[b.bone.name]
     out.write('b %i\n' % (bone_index))
     out.write('k')
-    for k in armature.animation_data.action.groups[bone_index].channels[0].keyframe_points: #channel 0 is x location. supose use LocRotScale
+    for k in armature.animation_data.action.groups[b.bone.name].channels[0].keyframe_points: #channel 0 is x location. supose use LocRotScale
         out.write(' %i' % (k.co.x/25*1000)) #A CORRIGER !
     out.write('\n')
-    for k in armature.animation_data.action.groups[bone_index].channels[0].keyframe_points:
+    for k in armature.animation_data.action.groups[b.bone.name].channels[0].keyframe_points:
         scene.frame_set(k.co.x)
         convert_m = Matrix.Rotation(pi * -90 / 180, 4, 'X')
-        m = armature.pose.bones[bone_index].matrix @ armature.pose.bones[bone_index].bone.matrix_local.inverted()
-        q = armature.pose.bones[bone_index].rotation_quaternion
-        t = armature.pose.bones[bone_index].location @ convert_m
-        s = armature.pose.bones[bone_index].scale @ convert_m
+        m = armature.pose.bones[b.bone.name].matrix @ armature.pose.bones[b.bone.name].bone.matrix_local.inverted()
+        q = armature.pose.bones[b.bone.name].rotation_quaternion
+        t = armature.pose.bones[b.bone.name].location @ convert_m
+        s = armature.pose.bones[b.bone.name].scale @ convert_m
 
         #out.write('m %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f %f\n' % (m[0][0], m[1][0], m[2][0], m[3][0], m[0][1], m[1][1], m[2][1], m[3][1], m[0][2], m[1][2], m[2][2], m[3][2], m[0][3], m[1][3], m[2][3], m[3][3]))
         out.write('q %f %f %f %f\n' % (q.w, q.x, q.y, q.z))
