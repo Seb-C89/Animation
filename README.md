@@ -7,6 +7,10 @@ Need to be updated :
 * [ ] Clean warnings
 * [ ] Opengl 3
 * [x] ~~Exporter updated to new Blender API~~
-* [ ] Export / Import binary mode
+* [ ] Exporter Improve
+  * [ ] Best file writting
+  * [ ] Use loops
+  * [ ] Do tringulation automatically (easier with loops)
+  * [ ] Integration in Blender UI
 
 ![screenshoot](etc/screen.jpg)
