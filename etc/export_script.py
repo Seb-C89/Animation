@@ -1,3 +1,6 @@
+#For Blender API > 2.8
+#The mesh must be triangulate (only triangles faces). In 'Edit' mode select all vertices, press 'space' and search for triangulate.
+
 import bpy
 from mathutils import *
 from math import *
@@ -10,8 +13,8 @@ scene.frame_set(0)
 path = 'D:\\Users\\Seb\\Desktop\\mesh\\';
 
 #### Prepare
-#Triangulate
-#Unwarp
+#TODO Triangulate
+#TODO Unwarp
 
 #### Export mesh
 out = open(path+'mesh', 'w')
