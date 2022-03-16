@@ -14,4 +14,7 @@ Need to be updated :
   * [ ] Export in binary mode
   * [ ] Integration in Blender UI
 
-![screenshoot](etc/screen.jpg)
+![screenshoot](etc/with.jpg)
+![screenshoot](etc/without.jpg)
+![screenshoot](etc/with_weight.jpg)
+![screenshoot](etc/without_weight.jpg)
