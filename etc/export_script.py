@@ -1,5 +1,5 @@
 #For Blender API > 2.8
-#The mesh must be triangulate (only triangles faces). In 'Edit' mode select all vertices, press 'space' and search for triangulate.
+#The mesh must be triangulate (only triangles faces) BEFORE attaching it to the armature. In 'Edit' mode select all vertices, press 'F3' and search for triangulate.
 
 import bpy
 from mathutils import *
@@ -117,7 +117,7 @@ for b in armature.pose.bones:
         out.write(' %i' % (k.co.x/25*1000)) #A CORRIGER !
     out.write('\n')
     for k in armature.animation_data.action.groups[b.bone.name].channels[0].keyframe_points:
-        scene.frame_set(k.co.x)
+        scene.frame_set(round(k.co.x))
         convert_m = Matrix.Rotation(pi * -90 / 180, 4, 'X')
         m = armature.pose.bones[b.bone.name].matrix @ armature.pose.bones[b.bone.name].bone.matrix_local.inverted()
         q = armature.pose.bones[b.bone.name].rotation_quaternion
